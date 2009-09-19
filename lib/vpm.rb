@@ -1,0 +1,2 @@
+
+require 'vpm/cli'
