@@ -1,5 +1,6 @@
 module Vpm
   module Commands
+    # Use vpm list to get a listing of currently installed commands
     class List < Vpm::Command      
       def execute!
         display!
