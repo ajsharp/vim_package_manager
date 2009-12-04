@@ -5,17 +5,25 @@ module Vpm
     describe List do
       
       before :each do
+        Vpm::Command.muted = true
         Dir.should_receive(:entries).and_return(['vim-ruby', 'surround'])
         @list = Vpm::Commands::List.new
+      end
+
+      it "should not output anything if muted is set" do
         @list.execute!
       end
       
       it "should return 2 @entries" do
-        @list.should have(2).entries
+        @list.execute!.should have(2).entries
+      end
+
+      it "should have an array of installed plugins" do
+        @list.execute!.entries.should be_instance_of Array
       end
       
       it "should display a list of all of the plugins" do
-        @list.output.should == %Q{Listing all plugins...\n
+        @list.execute!.output.should == %Q{Listing all plugins...\n
 vim-ruby
 surround
 
