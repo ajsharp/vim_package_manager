@@ -1,4 +1,3 @@
-require 'optparse'
 
 module Vpm
   class Cli
@@ -8,3 +7,16 @@ module Vpm
     end
   end
 end
+
+Trollop::options do
+  version "Vim Package/Plugin Manager by Alex Sharp\n"
+  banner <<-EOS
+  Usage: vpm [options] command [command options]
+
+  EOS
+
+  opt :dry_run, "Don't actually do anything", :short => "-p"
+  stop_on ['list', 'search']
+end
+
+
