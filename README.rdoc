@@ -1,24 +1,22 @@
 = Vim Package/Plugin Manager
 
-h1. Description
-
 vpm is a very simple command line tool written in ruby for working with and 
 managing your vim plugins. I created this tool because I was tired of copying
 directory structures from .zip files that contained vim plugins that I had to
 retrieve from an archaeic website. Hopefully, this tool will make your journey
 towards holiness (and by that I mean becoming a vim-god) a litle easier. Enjoy ;)
 
-h1. Usage & Commands
+= Usage & Commands
 
-h2. vpm list
+== vpm list
 
 Lists all of your installed plugins
 
-h2. vpm search [-l | --local] term
+== vpm search [-l | --local] term
 
 Search your local plugins for the term.
 
-h1. TODO
+= TODO
 
 * vpm search -r term
 * vpm install -l local/file/path.zip
