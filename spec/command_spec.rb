@@ -1,15 +1,11 @@
 require 'spec_helper'
 
-module Vpm
-  
-  describe Command do
-    before :each do
-      @command = Vpm::Command.new ['list']
-    end
-    
-    it "should save the command passed in" do
-      @command.command.should == 'list'
-    end
+describe Vpm::Command do
+  it "should have a List command" do
+    Vpm::Commands::List.should respond_to(:new)
   end
-  
+
+  it "should have a Search command" do
+    Vpm::Commands::Search.should respond_to(:new)
+  end
 end
