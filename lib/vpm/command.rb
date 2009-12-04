@@ -4,11 +4,9 @@ module Vpm
     @@muted = false
     attr_accessor :output
     
-    def initialize(*args)
-      args.flatten!
-      @command = args.shift
-      @output  = ""
-      execute!
+    def execute!
+      display_results!
+      self
     end
     
     def execute!
