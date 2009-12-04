@@ -1,7 +1,7 @@
 module Vpm
   
   class Command
-    attr_reader :command
+    @@muted = false
     attr_accessor :output
     
     def initialize(*args)
@@ -18,6 +18,14 @@ module Vpm
       else
         fail "Command #{@command} not recognized!"   
       end
+    end
+
+    def self.muted?
+      @@muted
+    end
+
+    def self.muted=(mute)
+      @@muted = mute
     end
   end
   
