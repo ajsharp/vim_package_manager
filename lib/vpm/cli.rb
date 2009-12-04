@@ -1,9 +1,8 @@
 
 module Vpm
   class Cli
-    def self.start(args)
-      puts "Starting vpm"
-      Vpm::Command.new(args)
+    def self.start(argv)
+      Vpm::Command.execute_command!(argv)
     end
   end
 end
