@@ -5,8 +5,9 @@ module Vpm
 
       def initialize(args)
         @installed_plugins = Vpm::Commands::List.new.entries
-        @query = args[1]
+        @query = first_arg_is_query_term?(args) ? args[0] : args[1]
       end
+
 
       def display_results!
         $stdout.puts results unless Vpm::Command.muted?
@@ -17,6 +18,10 @@ module Vpm
       end
 
       private
+        def first_arg_is_query_term?(args)
+          args[0].scan(/^[-]/).empty?
+        end
+
         def merge_with_installed_plugins
           installed_plugins.grep(/#{query}/)
         end

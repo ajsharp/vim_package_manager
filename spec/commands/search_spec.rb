@@ -30,3 +30,17 @@ describe Vpm::Commands::Search, "-l" do
   end
 
 end
+
+describe Vpm::Commands::Search, "rails.vim" do
+  before :each do
+    Vpm::Command.muted = true
+    @list = Vpm::Commands::List.new
+
+    Vpm::Commands::List.stub(:new).
+      and_return(mock("List", :entries => ['surround.vim', 'rails.vim']))
+  end
+
+  it "should return rails.vim if no flag passed" do
+    Vpm::Commands::Search.new(["rails"]).results.should == ["rails.vim"]
+  end
+end
