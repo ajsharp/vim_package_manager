@@ -9,12 +9,19 @@ module Vpm
       self
     end
     
-    def execute!
-      case @command
+    def self.execute_command!(argv)
+      command = argv.shift
+      case command
       when 'list'
-        Vpm::Commands::List.new
+        Vpm::Commands::List.new.execute!
+      when 'search'
+        Trollop::options do
+          banner "Usage: search [option] term"
+          opt :local, "Search for local plugins", :short => "-l"
+        end
+        Vpm::Commands::Search.new(argv).execute! unless args.first == "-h"
       else
-        fail "Command #{@command} not recognized!"   
+        Trollop::die "Unknown subcommand #{command}"
       end
     end
 
