@@ -3,25 +3,32 @@ module Bundler
  file = File.expand_path(__FILE__)
  dir = File.dirname(file)
 
+<% unless options[:system_gems] -%>
   ENV["GEM_HOME"] = dir
   ENV["GEM_PATH"] = dir
-  ENV["PATH"]     = "#{dir}/../../bin:#{ENV["PATH"]}"
+<% end -%>
+  ENV["PATH"]     = "#{dir}/<%= bindir %>:#{ENV["PATH"]}"
   ENV["RUBYOPT"]  = "-r#{file} #{ENV["RUBYOPT"]}"
 
-  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/trollop-1.15/bin")
-  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/trollop-1.15/lib")
-  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/bundler-0.7.0/bin")
-  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/bundler-0.7.0/lib")
+<% load_paths.each do |load_path| -%>
+  $LOAD_PATH.unshift File.expand_path("#{dir}/<%= load_path %>")
+<% end -%>
 
-  @gemfile = "#{dir}/../../Gemfile"
+  @gemfile = "#{dir}/<%= filename %>"
 
+<% if options[:rubygems] -%>
   require "rubygems"
 
   @bundled_specs = {}
-  @bundled_specs["trollop"] = eval(File.read("#{dir}/specifications/trollop-1.15.gemspec"))
-  @bundled_specs["trollop"].loaded_from = "#{dir}/specifications/trollop-1.15.gemspec"
-  @bundled_specs["bundler"] = eval(File.read("#{dir}/specifications/bundler-0.7.0.gemspec"))
-  @bundled_specs["bundler"].loaded_from = "#{dir}/specifications/bundler-0.7.0.gemspec"
+<% specs.each do |spec| -%>
+<% if options[:no_bundle].include?(spec.name) -%>
+  gem "<%= spec.name %>", "<%= spec.version %>"
+<% else -%>
+<% path = spec_file_for(spec) -%>
+  @bundled_specs["<%= spec.name %>"] = eval(File.read("#{dir}/<%= path %>"))
+  @bundled_specs["<%= spec.name %>"].loaded_from = "#{dir}/<%= path %>"
+<% end -%>
+<% end -%>
 
   def self.add_specs_to_loaded_specs
     Gem.loaded_specs.merge! @bundled_specs
@@ -35,6 +42,7 @@ module Bundler
 
   add_specs_to_loaded_specs
   add_specs_to_index
+<% end -%>
 
   def self.require_env(env = nil)
     context = Class.new do
@@ -91,6 +99,7 @@ module Bundler
   end
 end
 
+<% if options[:rubygems] -%>
 module Gem
   @loaded_stacks = Hash.new { |h,k| h[k] = [] }
 
@@ -99,3 +108,38 @@ module Gem
     Bundler.add_specs_to_index
   end
 end
+<% else -%>
+$" << "rubygems.rb"
+
+module Kernel
+  def gem(*)
+    # Silently ignore calls to gem, since, in theory, everything
+    # is activated correctly already.
+  end
+end
+
+# Define all the Gem errors for gems that reference them.
+module Gem
+  def self.ruby ; <%= Gem.ruby.inspect %> ; end
+  class LoadError < ::LoadError; end
+  class Exception < RuntimeError; end
+  class CommandLineError < Exception; end
+  class DependencyError < Exception; end
+  class DependencyRemovalException < Exception; end
+  class GemNotInHomeException < Exception ; end
+  class DocumentError < Exception; end
+  class EndOfYAMLException < Exception; end
+  class FilePermissionError < Exception; end
+  class FormatException < Exception; end
+  class GemNotFoundException < Exception; end
+  class InstallError < Exception; end
+  class InvalidSpecificationException < Exception; end
+  class OperationNotSupportedError < Exception; end
+  class RemoteError < Exception; end
+  class RemoteInstallationCancelled < Exception; end
+  class RemoteInstallationSkipped < Exception; end
+  class RemoteSourceException < Exception; end
+  class VerificationError < Exception; end
+  class SystemExitException < SystemExit; end
+end
+<% end -%>
