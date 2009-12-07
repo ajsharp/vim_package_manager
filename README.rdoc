@@ -19,10 +19,9 @@ Search your local plugins for the term.
 = TODO
 
 * vpm search -r term
-* vpm install -l local/file/path.zip
-* vpm install -l local/file/path.vim
+* vpm install local/file/path.zip
 * vpm install -r plugin-name --version
-* vpm install -r http://example.com/vim-plugin.zip
+* vpm install http://example.com/vim-plugin.zip
 * vpm remove package-name
 * vpm update --all
 * vpm update package-name
