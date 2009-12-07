@@ -11,6 +11,7 @@ module Vpm
     
     def self.execute_command!(argv)
       command = argv.shift
+
       case command
       when 'list'
         Vpm::Commands::List.new.execute!
@@ -20,6 +21,8 @@ module Vpm
           opt :local, "Search for local plugins", :short => "-l"
         end
         Vpm::Commands::Search.new(argv).execute! unless args.first == "-h"
+      when 'install'
+        Vpm::Commands::Install.new(argv).execute!
       else
         Trollop::die "Unknown subcommand #{command}"
       end
